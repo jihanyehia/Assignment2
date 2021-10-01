@@ -1,0 +1,242 @@
+Script started on 2021-10-01 02:10:14+00:00 [TERM="xterm" TTY="/dev/pts/0" COLUMNS="197" LINES="52"]
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ head -n 2 ../amazon_reviews_us_Books_v1_02.tsv
+marketplace	customer_id	review_id	product_id	product_parent	product_title	product_category	star_rating	helpful_votes	total_votes	vine	verified_purchase	review_headline	review_body	review_date
+US	12076615	RQ58W7SMO911M	0385730586	122662979	Sisterhood of the Traveling Pants (Book 1)	Books	4	2	3	N	N	this book was a great learning novel!	this boook was a great one that you could learn from. it not only teaches the imponrtance of family and their values but it also deals with basic issues that teens and some kids even deal with.  this book is about 4 best friends who are for the first time in their lives spending their summer apart. one day they are all in one of the girls rooms and finds a pair of pants that were tucked away in her closet.  once all four  of them try them on they realize that there is really something special about these pants.  seeming as how all 4 girls are differnt shapes and sizes and somehow the pants fit all of them,  they realize that these pants were the start of something special.  immediatley following they decided to make up certian rules abut the pants such as you must write the best thing u did while wearing the pants over your summer on the right leg and also some silly things such as to \\"never pick yuor nose while wearing the pants.\\"  this book follows the girls throuh their summers in differnt places of the world and through all of the different obstacles that life takes them through. it can really teach you alot not only about what is going on around you but most imporntantly about yuorself.  i would give this book 4 stars and would reccommend it to anyone who seems the slihgtest bit interested.	2005-10-14
+
+1.(a) How many unique customers reviewed products in this file? 
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ cut -f 2 ../amazon_reviews_us_Books_v1_02.tsv | sort -u | wc -l
+1502381
+
+1. (b) How many unique product ids were reviewed in this file?
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ cut -f 4 ../amazon_reviews_us_Books_v1_02.tsv | sort -u | wc -l
+779734
+
+1. (c) How many unique product titles were reviewed in this file? Is it the same as the number of productids?
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ cut -f 6 ../amazon_reviews_us_Books_v1_02.tsv | sort -u | wc -l
+713712
+It's less than the number of productids because there may exist the same book (same title) under different product ids.
+
+
+2. Select 100 different customers ids that did more than one review.
+I chose the top 100 customers with most reviews.
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ cut -f 2 ../amazon_reviews_us_Books_v1_02.tsv | sort | uniq -c | sort -nr | head -n 100 > 100_customer_ids.txt
+
+
+3. Select 100 different product ids.
+I chose the 100 products with the most reviews. 
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ cut -f 4 ../amazon_reviews_us_Books_v1_02.tsv | sort | uniq -c | sort -nr | head -n 100 > 100_product_ids.txt
+
+To check the files generated: 
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ head -[K100_customer_ids.txt 
+  21922 50122160
+   9964 50732546
+   2664 52615377
+   2215 45041039
+   1797 50776149
+   1786 50913245
+   1643 20595117
+   1622 45273033
+   1416 39569598
+   1384 49693975
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ head 100_product_ids.txt 
+   4625 043935806X
+   3739 0439139597
+   2666 0525947647
+   2615 0895260174
+   2584 0385504209
+   2366 0590353403
+   2052 0439784549
+   2024 0316666343
+   1795 1400050308
+   1772 0312864590
+
+
+4.  Put all the helpfulness scores and review scores (2 columns in each file) in different files named after the customers ids.
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ mkdir CUSTOMERS
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ for num in `tr -s " " < 100_customer_ids.txt | cut -d " " -f3`; do cat ../amazon_reviews_us_Books_v1_02.tsv | grep "$num" | cut -f 8,9 > CUSTOMERS/$num.txt ; done
+
+
+5. Put all the helpfulness scores and review scores (2 columns ineach file) in different files named after the products ids.
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ mkdir PRODUCTS
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ for num in `tr -s " " < 100_customer_ids.txt | cut -d " " -f3`; do cat ../amazon_reviews_us_Books_v1_02.tsv | grep "$num" | cut -f 8,9 > PRODUCTS/$num.txt ; done
+
+
+6. Write an alias called "l" for ls -latr, and an alias "w" for ls-la | wc. Put them in the .bashrc file.
+]0;yehia@f6linuxA9: ~/assignment2yehia@f6linuxA9:~/assignment2$ vi ~/.bashrc
+[?1049h[22;0;0t[>4;2m[?1h=[?2004h[1;52r[?12h[?12l[22;2t[22;1t[H[2J[?25l[52;1H"~/.bashrc" 121L, 3829C[2;1H[6n[2;1H  [1;1H[>c]10;?]11;?[1;1H*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'[12;5Halias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+#My aliases
+alias l='ls -latr'
+alias w='ls -la | wc'
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ source ~/.bashrc
+
+
+7. Verify you have 100 files in each of the CUSTOMERS and PRODUCTS directory.
+103 include the two usually hidden files . and .., in addition to the first line showing the total number of blocks taken by the files.
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ w
+    103     920    5803
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ cd ../PRODUCTS/
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ w
+    103     920    6003
+
+
+8. Compute for each of the 100 customer files and 100 product files the correlation between helpfulness scores and review scores per customer.
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ cd ../CUSTOMERS/
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ for f in *.txt; do corr=`~/datamash-1.3/datamash -W ppearson 1:2 < $f`; id=$(echo $f | cut -d '.' -f1); echo "$id      $corr" >>corr_customers; done      
+ 
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ cat corr_customers | sort -k2 | head
+52223435	-0.0026349289854177
+50776149	-0.0061448727026488
+50736950	-0.013727796992368
+35985708	-0.018475208724832
+52966385	-0.071306253746504
+20595117	-0.07801434074194
+52697458	-0.14252275828471
+50941451	0.0049250944457509
+52793250	0.0049836076293453
+46983871	0.0053203252670871
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ cat corr_customers | sort -nr -k2 | head 
+30559999	0.21345504736868
+53047425	0.19913465813733
+45041039	0.18720273660608
+52012289	0.18492316019033
+49202417	0.18318449848793
+52496677	0.18251371784434
+52500542	0.18154880963794
+41012519	0.17200338503861
+38491967	0.17020566472814
+53016962	0.16760279939147
+As shown above, customer 52223435 has the least correlated helpfulness scores and review scores, while customer 30559999 has the highest correlated helpfulness scores and review scores.
+
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ cd ../PRODUCTS/
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ for f in *.txt; do corr=`~/datamash-1.3/datamash -W ppearson 1:2 < $f`; id=$(echo $f | cut -d '.' -f1); echo "$id      $corr" >>corr_products; done
+       
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ cat corr_products | sort -k2 | head
+0316769487	-0.0045766657858869
+0060392452	-0.005974745413795
+0060582510	-0.010246379149183
+0156027321	-0.0164378772185
+0895261901	-0.017166311703057
+0140177396	-0.017267122072707
+038550120X	-0.018198279782867
+0684801523	-0.018403050611248
+0374332657	-0.01857154489074
+0553573403	-0.020308300123888
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ cat corr_products | sort -nr -k2 | head 
+0060875410	0.19739977277477
+0060763957	0.15197975868356
+0895260174	0.072368864712167
+0446532231	0.052837230152763
+0385497466	0.051448613612471
+0553272535	0.04830315533355
+0451526341	0.042590214498739
+0440219078	0.025958920372846
+0345342968	0.022896875138416
+0066214130	0.021252227226653
+As shown above, product 0316769487 has the least correlated helpfulness scores and review scores, while product 0060875410 has the highest correlated helpfulness scores and review scores.
+
+
+9. For each customer's file compute his/her average (mean) helpfulness score.
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ cd ../CUSTOMERS/
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ for f in *.txt; do ((sum = 0)); ((count = 0)); for num in `cut -f2 $f`; do sum=$(echo $sum+$num | bc); ((count++)); done ; mean=$(echo "scale=2; $sum/$count" | bc); id=$(echo $f | cut -d '.' -f1); echo "$id TAB $mean" >>mean ; done
+
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ cat mean | sort -k2 | head
+49042814	10.11
+50592435	10.17
+51243012	10.26
+45284807	10.32
+49992211	10.49
+36642996	10.67
+51010391	10.71
+50389232	11.08
+52966385	11.27
+46983871	11.37
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ cat mean | sort -nr -k2 | head 
+39134375	57.23
+52447634	41.81
+52012289	41.68
+49786731	38.16
+52500542	37.23
+51247650	34.66
+50761804	33.47
+51379338	30.76
+52615377	28.08
+53047425	26.92
+As shown above, customer 49042814 has the lowest mean of helpfulness votes (10.11), while customer 39134375 has the highest mean (57.23).
+
+
+10. For each product's file compute its average (mean)star_rating score.
+]0;yehia@f6linuxA9: ~/assignment2/CUSTOMERSyehia@f6linuxA9:~/assignment2/CUSTOMERS$ cd ../PRODUCTS/ 
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ for f in *.txt; do ((sum = 0)); ((count = 0)); for num in `cut -f1 $f`; do sum=$(echo $sum+$num | bc); ((count++)); done ; mean=$(echo "scale=2; $sum/$count" | bc); id=$(echo $f | cut -d '.' -f1); echo "$id       $mean" >>mean ; done
+
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ cat mean | sort  -k2 | head
+0312864590	1.68
+0399150897	1.90
+039915079X	2.24
+0609610597	2.38
+0425198243	2.48
+0385337116	2.50
+039914563X	2.51
+0385497466	2.63
+0312857691	2.75
+0975599518	2.87
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ cat mean | sort -nr -k2 | head 
+0439136350	4.84
+0590353403	4.78
+0439139597	4.77
+0439064864	4.75
+0671025368	4.71
+044652252X	4.69
+0374332657	4.67
+059035342X	4.66
+0440414806	4.65
+0345340426	4.65
+As shown above, product 0312864590 has the lowest mean of star ratings (1.68), while product 0439136350 has the highest mean (4.84).
+
+]0;yehia@f6linuxA9: ~/assignment2/PRODUCTSyehia@f6linuxA9:~/assignment2/PRODUCTS$ exit
+
+Script done on 2021-10-01 04:44:02+00:00 [COMMAND_EXIT_CODE="0"]
